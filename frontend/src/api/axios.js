@@ -1,10 +1,13 @@
 import axios from 'axios';
 
+// Use Vite environment variable for API base URL
+const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+
 const apiClient = axios.create({
-  baseURL: 'http://localhost:5000/api', // Adjust if your backend runs elsewhere
+  baseURL: baseURL,
 });
 
-// Optional: Interceptor to add token to requests
+// Interceptor to add token to requests
 apiClient.interceptors.request.use(config => {
   const token = localStorage.getItem('token'); // Assumes token is stored as a plain string
   if (token) {

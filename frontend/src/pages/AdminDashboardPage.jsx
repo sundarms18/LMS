@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import UserManagement from '../components/admin/UserManagement';
+import { Link } from 'react-router-dom'; // Import Link
 import CourseListAdmin from '../components/admin/CourseListAdmin';
 import CourseForm from '../components/admin/CourseForm';
 import apiClient from '../api/axios';
@@ -30,35 +30,30 @@ const AdminDashboardPage = () => {
         <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
       </header>
 
-      <section id="user-management">
-        <UserManagement />
+      <section id="user-management" className="mb-8 p-6 bg-white shadow rounded-lg">
+        <h2 className="text-2xl font-semibold text-gray-700 mb-4">User Administration</h2>
+        <p className="text-gray-600 mb-4">
+          Manage user accounts, approve new registrations, and view user details.
+        </p>
+        <Link
+          to="/admin/users"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Go to User Management
+        </Link>
       </section>
 
-      <section id="course-management">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold text-gray-700">Course Management</h2>
-          <button
-            onClick={() => setShowCourseForm(prev => !prev)}
-            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-          >
-            {showCourseForm ? 'Cancel' : 'Create New Course'}
-          </button>
-        </div>
-
-        {showCourseForm && (
-          <CourseForm
-            onSubmitFunction={handleCourseCreate}
-            onCancel={() => {
-              setShowCourseForm(false);
-              setCourseFormError(''); // Clear errors when cancelling
-            }}
-          />
-        )}
-        {courseFormError && !showCourseForm && ( // Show error if form submitted and then hidden due to error
-             <p className="text-red-500 text-center mb-4 p-4 bg-red-100 rounded-md">{courseFormError}</p>
-        )}
-
-        <CourseListAdmin refreshTrigger={refreshKey} />
+      <section id="course-management" className="mb-8 p-6 bg-white shadow rounded-lg">
+        <h2 className="text-2xl font-semibold text-gray-700 mb-4">Course Administration</h2>
+        <p className="text-gray-600 mb-4">
+          Create, edit, and manage course details and their content structure.
+        </p>
+        <Link
+          to="/admin/courses"
+          className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+        >
+          Go to Course Management
+        </Link>
       </section>
     </div>
   );
