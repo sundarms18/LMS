@@ -3,19 +3,25 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const ProtectedRoute = ({ adminOnly = false }) => {
-  const { user, token, loading } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuth(); // Use isAuthenticated and authLoading
 
-  if (loading) {
-    // You might want to show a loading spinner here instead of redirecting prematurely
-    return <div className="p-4 text-center">Authenticating...</div>;
+  if (authLoading) {
+    // Show a loading spinner or a blank screen while checking authentication state
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="p-4 text-center text-lg">Authenticating...</div>
+      </div>
+    );
   }
 
-  if (!token || !user) {
-    // Not logged in
+  if (!isAuthenticated) {
+    // Not logged in, redirect to login page
     return <Navigate to="/login" replace />;
   }
 
-  if (adminOnly && user.role !== 'admin') {
+  // At this point, user is authenticated. Now check for admin role if required.
+  // The user object should be available if isAuthenticated is true.
+  if (adminOnly && (!user || user.role !== 'admin')) {
     // Logged in but not an admin, trying to access admin-only route
     return <Navigate to="/dashboard" replace />; // Or a generic "Unauthorized" page
   }
