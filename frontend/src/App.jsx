@@ -18,12 +18,16 @@ import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRou
 import UserCourseListPage from './pages/user/UserCourseListPage';
 import UserSingleCoursePage from './pages/user/UserSingleCoursePage';
 import UserContentViewPage from './pages/user/UserContentViewPage';
+import MyCoursesPage from './pages/user/MyCoursesPage'; // Import MyCoursesPage
+import MyEnrollmentsPage from './pages/user/MyEnrollmentsPage'; // Import MyEnrollmentsPage
+
 import ManageCourseContentPage from './pages/admin/ManageCourseContentPage'; // Import ManageCourseContentPage
 import AdminUserManagementPage from './pages/admin/AdminUserManagementPage'; // Import AdminUserManagementPage
 import AdminCourseListPage from './pages/admin/AdminCourseListPage'; // Import AdminCourseListPage
 import AdminCreateCoursePage from './pages/admin/AdminCreateCoursePage'; // Import AdminCreateCoursePage
 import AdminEditCoursePage from './pages/admin/AdminEditCoursePage'; // Import AdminEditCoursePage
 import AdminManageContentPage from './pages/admin/AdminManageContentPage'; // Import AdminManageContentPage
+import AdminEnrollmentManagementPage from './pages/admin/AdminEnrollmentManagementPage'; // Import AdminEnrollmentManagementPage
 
 function App() {
   return (
@@ -39,10 +43,12 @@ function App() {
           {/* Protected Routes for normal users (and admins) */}
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<UserDashboardPage />} />
-            {/* User-facing course routes */}
-            <Route path="/courses" element={<UserCourseListPage />} />
+            {/* User-facing course and enrollment routes */}
+            <Route path="/courses" element={<UserCourseListPage />} /> {/* Browse all courses */}
             <Route path="/courses/:courseId" element={<UserSingleCoursePage />} />
             <Route path="/courses/:courseId/content/:contentId" element={<UserContentViewPage />} />
+            <Route path="/my-courses" element={<MyCoursesPage />} /> {/* Courses user is enrolled in */}
+            <Route path="/my-enrollments" element={<MyEnrollmentsPage />} /> {/* User's enrollment history/status */}
             {/* Add other user-specific routes here if any */}
           </Route>
 
@@ -53,8 +59,9 @@ function App() {
             <Route path="/admin/courses" element={<AdminCourseListPage />} />
             <Route path="/admin/courses/new" element={<AdminCreateCoursePage />} />
             <Route path="/admin/courses/:courseId/edit" element={<AdminEditCoursePage />} />
-            <Route path="/admin/courses/:courseId/manage" element={<ManageCourseContentPage />} /> {/* Existing route for course content (if any) or could be removed if modules replace this */}
-            <Route path="/admin/modules/:moduleId/content" element={<AdminManageContentPage />} /> {/* New route for module content */}
+            <Route path="/admin/courses/:courseId/manage" element={<ManageCourseContentPage />} />
+            <Route path="/admin/modules/:moduleId/content" element={<AdminManageContentPage />} />
+            <Route path="/admin/enrollments" element={<AdminEnrollmentManagementPage />} /> {/* New route for admin enrollment management */}
             {/* Add other admin-specific routes here */}
           </Route>
 

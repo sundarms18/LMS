@@ -1,6 +1,7 @@
 const express = require('express');
 const Module = require('../models/Module');
 const Content = require('../models/Content');
+const Course = require('../models/Course'); // Import Course model
 const { protect, isAdmin } = require('../middleware/authMiddleware');
 
 const router = express.Router();
@@ -27,11 +28,19 @@ router.post('/modules/:moduleId/content', protect, isAdmin, async (req, res) => 
       return res.status(404).json({ message: 'Module not found' });
     }
 
+    // Find the course this module belongs to
+    const course = await Course.findOne({ modules: moduleId });
+    if (!course) {
+      // This case should ideally not happen if data is consistent
+      return res.status(404).json({ message: 'Parent course not found for this module' });
+    }
+
     const content = new Content({
       title,
       type,
       url: type === 'video' ? url : undefined,
       text_content: type === 'text' ? text_content : undefined,
+      course: course._id, // Add the course ID
     });
     const createdContent = await content.save();
 
