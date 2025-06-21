@@ -7,6 +7,10 @@ const adminCourseRoutes = require('./routes/adminCourseRoutes');
 const adminModuleRoutes = require('./routes/adminModuleRoutes');
 const adminContentRoutes = require('./routes/adminContentRoutes');
 const userCourseRoutes = require('./routes/userCourseRoutes');
+const enrollmentRoutes = require('./routes/enrollmentRoutes'); // Import user enrollment routes
+const adminEnrollmentRoutes = require('./routes/adminEnrollmentRoutes'); // Import admin enrollment routes
+const progressRoutes = require('./routes/progressRoutes'); // Import user progress routes
+const adminProgressRoutes = require('./routes/adminProgressRoutes'); // Import admin progress routes
 
 dotenv.config();
 
@@ -28,9 +32,16 @@ app.use('/api/admin/users', adminUserRoutes);
 app.use('/api/admin/courses', adminCourseRoutes); // Handles /api/admin/courses and /api/admin/courses/:courseId
 app.use('/api/admin/modules', adminModuleRoutes);     // Handles /api/admin/courses/:courseId/modules and /api/admin/modules/:moduleId
 app.use('/api/admin/content', adminContentRoutes);   // Handles /api/admin/modules/:moduleId/content and /api/admin/content/:contentId
+app.use('/api/admin/enrollments', adminEnrollmentRoutes); // Mount admin enrollment routes
 
 // User-facing course and content routes
 app.use('/api/courses', userCourseRoutes); // Handles /api/courses, /api/courses/:courseId, /api/content/:contentId
+app.use('/api/enroll', enrollmentRoutes); // Mount user enrollment routes
+app.use('/api/progress', progressRoutes); // Mount user progress routes
+
+// Admin routes (continued)
+app.use('/api/admin/progress', adminProgressRoutes); // Mount admin progress routes
+
 
 app.get('/', (req, res) => {
   res.json({ message: 'Backend API is running' });

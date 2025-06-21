@@ -94,18 +94,21 @@ const AdminContentForm = ({ initialData, onSubmit, onCancel, isSubmitting }) => 
           {type === 'video' && (
             <div>
               <label htmlFor="contentUrl" className="block text-sm font-medium text-gray-700">
-                Video URL
+                YouTube Video URL (unlisted or public)
               </label>
               <input
-                type="url"
+                type="text" // Changed from "url" to "text" to allow video IDs or full URLs
                 name="contentUrl"
                 id="contentUrl"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 required
-                placeholder="e.g., https://www.youtube.com/watch?v=..."
+                placeholder="e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ OR dQw4w9WgXcQ"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
+              <p className="mt-1 text-xs text-gray-500">
+                Please provide the full YouTube URL or just the Video ID. Make sure the video is public or unlisted.
+              </p>
             </div>
           )}
 
