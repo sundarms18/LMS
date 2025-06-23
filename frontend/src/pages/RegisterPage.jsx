@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { registerUser } from '../../api/authApi'; // Import registerUser
+import { registerUser } from '../api/authApi'; // Import registerUser
 
 const RegisterPage = () => {
   const [name, setName] = useState('');

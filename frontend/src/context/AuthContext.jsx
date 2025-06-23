@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 // apiClient is not directly used here anymore, but axiosInstance is used in authApi.js
-// import apiClient from '../api/axios';
+// import apiClient from '../api/axios'; 
 import { loginUser } from '../api/authApi'; // Import loginUser
 
 export const AuthContext = createContext(null); // Added export
@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     navigate('/login'); // Redirect to login after logout
   };
-
+  
   const isAuthenticated = !!token && !!user; // Derived state
 
   return (

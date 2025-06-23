@@ -59,7 +59,8 @@ const UserContentViewPage = () => {
             className="px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors mb-2"
         >
             Go Back
-        </Link>
+        
+        </button>
         <Link to="/courses" className="text-sm text-indigo-600 hover:text-indigo-800">
           Or, go to Courses List
         </Link>
