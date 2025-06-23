@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 // import apiClient from '../api/axios';
 import { loginUser } from '../api/authApi'; // Import loginUser
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null); // Added export
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // Should store { _id, name, email, role, isApproved }
