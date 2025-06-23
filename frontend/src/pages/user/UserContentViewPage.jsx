@@ -1,25 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { getContentForUser } from '../../api/courseApi';
-import ReactMarkdown from 'react-markdown'; // For rendering markdown text content
+import { toggleContentCompletion } from '../../api/progressApi'; // Import progress API
+import ReactMarkdown from 'react-markdown';
 
 const UserContentViewPage = () => {
   const { courseId, contentId } = useParams();
+  const location = useLocation(); // To get initialIsCompleted from route state
+  const navigate = useNavigate();
+
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
+
+  // Progress related state
+  const initialCompletedState = location.state?.isCompleted || false;
+  const [isCompleted, setIsCompleted] = useState(initialCompletedState);
+  const [loadingCompletionToggle, setLoadingCompletionToggle] = useState(false);
+  const [toggleError, setToggleError] = useState(null); // Error specific to toggle action
+
+  useEffect(() => {
+    // Update isCompleted if initialCompletedState changes (e.g., navigating back and forth)
+    setIsCompleted(location.state?.isCompleted || false);
+  }, [location.state?.isCompleted]);
 
   useEffect(() => {
     const fetchContent = async () => {
+      setLoading(true); // Ensure loading is true at the start of fetch
+      setError(null); // Clear previous errors
+      setToggleError(null); // Clear previous toggle errors
       try {
-        setLoading(true);
         const data = await getContentForUser(contentId);
         setContent(data);
-        setError(null);
       } catch (err) {
         setError(err.message || `Failed to fetch content (ID: ${contentId}).`);
-        console.error(err);
+        console.error('Fetch Content Error:', err);
       } finally {
         setLoading(false);
       }
@@ -55,6 +70,20 @@ const UserContentViewPage = () => {
   if (!content) {
     return <div className="text-center p-10 text-xl text-gray-600">Content not found.</div>;
   }
+
+  const handleToggleCompletion = async () => {
+    setLoadingCompletionToggle(true);
+    setToggleError(null);
+    try {
+      const updatedProgress = await toggleContentCompletion(contentId);
+      setIsCompleted(updatedProgress.completed);
+    } catch (err) {
+      setToggleError(err.message || 'Failed to update completion status.');
+      console.error('Toggle Completion Error:', err);
+    } finally {
+      setLoadingCompletionToggle(false);
+    }
+  };
 
   // Utility function to extract YouTube Video ID and construct embed URL
   const getYouTubeEmbedUrl = (urlInput) => {
@@ -156,13 +185,34 @@ const UserContentViewPage = () => {
         <header className="mb-6">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900">{content.title}</h1>
         </header>
+
         {renderContent()}
+
+        <div className="mt-8 pt-6 border-t border-gray-200">
+          {toggleError && (
+            <p className="text-sm text-red-600 mb-3 text-center bg-red-100 p-2 rounded-md">Error updating status: {toggleError}</p>
+          )}
+          <button
+            onClick={handleToggleCompletion}
+            disabled={loadingCompletionToggle}
+            className={`w-full md:w-auto px-6 py-3 rounded-lg font-semibold text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2
+                        ${isCompleted
+                            ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
+                            : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'}
+                        ${loadingCompletionToggle ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {loadingCompletionToggle
+              ? 'Updating...'
+              : isCompleted ? 'Mark as Incomplete' : 'Mark as Complete'}
+          </button>
+          {isCompleted && <p className="text-sm text-green-700 mt-2 text-center">🎉 Well done! Content marked as complete.</p>}
+        </div>
       </article>
 
-      <div className="mt-10 text-center">
+      <div className="mt-12 text-center">
         <button
             onClick={() => navigate(`/courses/${courseId}`)}
-            className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors"
+            className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors shadow-md hover:shadow-lg"
         >
             Back to Course Modules
         </button>
