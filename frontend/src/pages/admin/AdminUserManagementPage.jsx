@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react'; // Removed useContext
 import { getUsers, approveUser } from '../../api/adminApi';
-import { AuthContext } from '../../context/AuthContext'; // Assuming AuthContext provides user role
+import { useAuth } from '../../context/AuthContext'; // Changed to useAuth
 
 const AdminUserManagementPage = () => {
   const [users, setUsers] = useState([]);
@@ -8,7 +8,7 @@ const AdminUserManagementPage = () => {
   const [error, setError] = useState(null);
   const [approvingUserId, setApprovingUserId] = useState(null); // To disable button during API call
 
-  const { user } = useContext(AuthContext); // Assuming user object has a role property
+  const { user } = useAuth(); // Changed to useAuth()
 
   useEffect(() => {
     const fetchUsers = async () => {
