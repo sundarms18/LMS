@@ -17,6 +17,11 @@ const contentSchema = new Schema({
   text_content: { // For text type
     type: String,
   },
+  course: { // Reference to the parent course
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Course',
+    required: true,
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Content', contentSchema);

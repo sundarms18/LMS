@@ -29,3 +29,14 @@ export const getContentForUser = async (contentId) => {
     throw error.response?.data || { message: error.message || 'Failed to fetch content' };
   }
 };
+
+// Get all courses a user is currently enrolled in and approved for
+export const getMyEnrolledCourses = async () => {
+  try {
+    // This matches the backend route GET /api/courses/my-enrolled-courses
+    const response = await axiosInstance.get('/courses/my-enrolled-courses');
+    return response.data; // Expects an array of fully populated course objects
+  } catch (error) {
+    throw error.response?.data || { message: error.message || 'Failed to fetch enrolled courses' };
+  }
+};

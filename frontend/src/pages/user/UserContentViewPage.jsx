@@ -56,33 +56,77 @@ const UserContentViewPage = () => {
     return <div className="text-center p-10 text-xl text-gray-600">Content not found.</div>;
   }
 
+  // Utility function to extract YouTube Video ID and construct embed URL
+  const getYouTubeEmbedUrl = (urlInput) => {
+    if (!urlInput) return null;
+
+    let videoId = null;
+
+    // Standard URL: https://www.youtube.com/watch?v=VIDEO_ID
+    let match = urlInput.match(/[?&]v=([^&]+)/);
+    if (match) {
+      videoId = match[1];
+    } else {
+      // Shortened URL: https://youtu.be/VIDEO_ID
+      match = urlInput.match(/youtu\.be\/([^?&]+)/);
+      if (match) {
+        videoId = match[1];
+      } else {
+        // Embed URL: https://www.youtube.com/embed/VIDEO_ID
+        match = urlInput.match(/\/embed\/([^?&]+)/);
+        if (match) {
+          videoId = match[1]; // Already in correct embed format, but we just need ID
+        } else {
+          // Direct Video ID (assuming it's an 11-character alphanumeric string, possibly with -_):
+          // This regex is a common pattern for YouTube IDs.
+          if (/^[a-zA-Z0-9_-]{11}$/.test(urlInput)) {
+            videoId = urlInput;
+          }
+        }
+      }
+    }
+
+    if (videoId) {
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+
+    // Fallback: if it's a generic URL that might be embeddable (e.g. not YouTube but some other platform)
+    // or if the admin pasted a direct MP4 link (though iframe might not be best for that)
+    // For this task, we'll focus on YouTube. If it's not a recognized YouTube format, we'll consider it invalid for iframe.
+    // console.warn("Could not extract YouTube video ID from URL:", urlInput);
+    return null; // Return null if no valid YouTube ID found
+  };
+
+
   const renderContent = () => {
     if (content.type === 'video') {
-      // Basic YouTube URL embed logic (can be made more robust for other video types)
-      let videoUrl = content.url;
-      if (videoUrl && videoUrl.includes('youtube.com/watch?v=')) {
-        videoUrl = videoUrl.replace('watch?v=', 'embed/');
-      } else if (videoUrl && videoUrl.includes('youtu.be/')) {
-        videoUrl = videoUrl.replace('youtu.be/', 'youtube.com/embed/');
-      }
-      // Add other common video platform transformations if needed
+      const embedUrl = getYouTubeEmbedUrl(content.url);
 
-      return (
-        <div className="aspect-w-16 aspect-h-9">
-          <iframe
-            src={videoUrl}
-            title={content.title}
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="w-full h-full rounded-lg shadow-lg"
-          ></iframe>
-        </div>
-      );
+      if (embedUrl) {
+        return (
+          <div className="aspect-w-16 aspect-h-9 bg-black rounded-lg shadow-xl overflow-hidden"> {/* Added bg-black for letterboxing */}
+            <iframe
+              src={embedUrl}
+              title={content.title}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              className="w-full h-full" // Ensure iframe takes full space of aspect ratio container
+            ></iframe>
+          </div>
+        );
+      } else {
+        return (
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md shadow" role="alert">
+            <p className="font-bold">Video Error</p>
+            <p>The video could not be loaded. The URL might be invalid, not a YouTube link, or the video may be private.</p>
+          </div>
+        );
+      }
     } else if (content.type === 'text') {
       return (
-        <div className="prose lg:prose-xl max-w-none bg-white p-6 rounded-lg shadow">
-          <ReactMarkdown>{content.text_content || ''}</ReactMarkdown>
+        <div className="prose lg:prose-xl max-w-none bg-white p-6 sm:p-8 rounded-lg shadow-lg">
+          <ReactMarkdown>{content.text_content || '*No text content provided.*'}</ReactMarkdown>
         </div>
       );
     }

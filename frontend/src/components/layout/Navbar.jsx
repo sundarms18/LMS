@@ -37,12 +37,26 @@ const Navbar = () => {
                     Dashboard
                   </NavLink>
                   {user.role !== 'admin' && (
-                    <NavLink
-                      to="/courses"
-                      className={({ isActive }) => isActive ? activeClassName : inactiveClassName + " px-3 py-2 rounded-md text-sm font-medium transition-colors"}
-                    >
-                      Courses
-                    </NavLink>
+                    <>
+                      <NavLink
+                        to="/my-courses"
+                        className={({ isActive }) => isActive ? activeClassName : inactiveClassName + " px-3 py-2 rounded-md text-sm font-medium transition-colors"}
+                      >
+                        My Courses
+                      </NavLink>
+                      <NavLink
+                        to="/courses"
+                        className={({ isActive }) => isActive ? activeClassName : inactiveClassName + " px-3 py-2 rounded-md text-sm font-medium transition-colors"}
+                      >
+                        Browse All Courses
+                      </NavLink>
+                      <NavLink
+                        to="/my-enrollments"
+                        className={({ isActive }) => isActive ? activeClassName : inactiveClassName + " px-3 py-2 rounded-md text-sm font-medium transition-colors"}
+                      >
+                        My Enrollments
+                      </NavLink>
+                    </>
                   )}
                   {/* Consider an Admin dropdown for more links if needed */}
                   {/* {user.role === 'admin' && (
