@@ -11,6 +11,7 @@ const enrollmentRoutes = require('./routes/enrollmentRoutes'); // Import user en
 const adminEnrollmentRoutes = require('./routes/adminEnrollmentRoutes'); // Import admin enrollment routes
 const progressRoutes = require('./routes/progressRoutes'); // Import user progress routes
 const adminProgressRoutes = require('./routes/adminProgressRoutes'); // Import admin progress routes
+const devRoutes = require('./routes/devRoutes'); // Import dev routes for seeding
 
 dotenv.config();
 
@@ -42,6 +43,10 @@ app.use('/api/progress', progressRoutes); // Mount user progress routes
 // Admin routes (continued)
 app.use('/api/admin/progress', adminProgressRoutes); // Mount admin progress routes
 
+// Development routes (e.g., for seeding)
+if (process.env.NODE_ENV === 'development') {
+  app.use('/api/dev', devRoutes);
+}
 
 app.get('/', (req, res) => {
   res.json({ message: 'Backend API is running' });
