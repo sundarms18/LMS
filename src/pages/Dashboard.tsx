@@ -149,10 +149,10 @@ const Dashboard: React.FC = () => {
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold text-gray-900">My Courses</h2>
               <Link
-                to="/courses"
+                to="/enroll"
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
               >
-                Browse Courses
+                Enroll in a new Course
               </Link>
             </div>
           </div>
