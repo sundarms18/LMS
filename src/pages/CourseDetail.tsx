@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import { BookOpen, Clock, Play, FileText, CheckCircle, ArrowRight, User } from 'lucide-react';
+import ModuleManagement from '../components/ModuleManagement';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -256,55 +257,64 @@ const CourseDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* Course Modules */}
+        {/* Course Content */}
         <div className="bg-white rounded-2xl shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Course Content</h2>
-          
-          {course.modules.length === 0 ? (
-            <p className="text-gray-500">No modules available yet.</p>
+          {user?.role === 'admin' ? (
+            <ModuleManagement
+              courseId={course._id}
+              modules={course.modules}
+              onModulesUpdate={fetchCourse}
+            />
           ) : (
-            <div className="space-y-6">
-              {course.modules
-                .sort((a, b) => a.order - b.order)
-                .map((module) => (
-                  <div key={module._id} className="border border-gray-200 rounded-lg overflow-hidden">
-                    <div className="bg-gray-50 px-6 py-4">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-1">
-                        {module.title}
-                      </h3>
-                      {module.description && (
-                        <p className="text-gray-600">{module.description}</p>
-                      )}
-                    </div>
-                    
-                    <div className="divide-y divide-gray-200">
-                      {module.lessons
-                        .sort((a, b) => a.order - b.order)
-                        .map((lesson) => (
-                          <div key={lesson._id} className="px-6 py-4 flex items-center justify-between">
-                            <div className="flex items-center space-x-3">
-                              {lesson.type === 'video' ? (
-                                <Play className="h-5 w-5 text-blue-600" />
-                              ) : (
-                                <FileText className="h-5 w-5 text-green-600" />
-                              )}
-                              <div>
-                                <h4 className="font-medium text-gray-900">{lesson.title}</h4>
-                                {lesson.description && (
-                                  <p className="text-sm text-gray-600">{lesson.description}</p>
-                                )}
+            <>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Course Content</h2>
+              {course.modules.length === 0 ? (
+                <p className="text-gray-500">No modules available yet.</p>
+              ) : (
+                <div className="space-y-6">
+                  {course.modules
+                    .sort((a, b) => a.order - b.order)
+                    .map((module) => (
+                      <div key={module._id} className="border border-gray-200 rounded-lg overflow-hidden">
+                        <div className="bg-gray-50 px-6 py-4">
+                          <h3 className="text-xl font-semibold text-gray-900 mb-1">
+                            {module.title}
+                          </h3>
+                          {module.description && (
+                            <p className="text-gray-600">{module.description}</p>
+                          )}
+                        </div>
+
+                        <div className="divide-y divide-gray-200">
+                          {module.lessons
+                            .sort((a, b) => a.order - b.order)
+                            .map((lesson) => (
+                              <div key={lesson._id} className="px-6 py-4 flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
+                                  {lesson.type === 'video' ? (
+                                    <Play className="h-5 w-5 text-blue-600" />
+                                  ) : (
+                                    <FileText className="h-5 w-5 text-green-600" />
+                                  )}
+                                  <div>
+                                    <h4 className="font-medium text-gray-900">{lesson.title}</h4>
+                                    {lesson.description && (
+                                      <p className="text-sm text-gray-600">{lesson.description}</p>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="flex items-center space-x-3 text-sm text-gray-500">
+                                  <Clock className="h-4 w-4" />
+                                  <span>{lesson.duration} min</span>
+                                </div>
                               </div>
-                            </div>
-                            <div className="flex items-center space-x-3 text-sm text-gray-500">
-                              <Clock className="h-4 w-4" />
-                              <span>{lesson.duration} min</span>
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                ))}
-            </div>
+                            ))}
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

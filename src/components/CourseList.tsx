@@ -1,9 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Plus, CreditCard as Edit, Trash, Eye } from 'lucide-react';
 
 interface Course {
   _id: string;
   title: string;
+  slug: string;
   description: string;
   isPublished: boolean;
   instructor: {
@@ -55,7 +57,9 @@ const CourseList: React.FC<CourseListProps> = ({
               <tr key={course._id}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div>
-                    <div className="text-sm font-medium text-gray-900">{course.title}</div>
+                    <Link to={`/courses/${course.slug}`} className="text-sm font-medium text-blue-600 hover:underline">
+                      {course.title}
+                    </Link>
                     <div className="text-sm text-gray-500 line-clamp-2">{course.description}</div>
                   </div>
                 </td>
