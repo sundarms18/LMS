@@ -12,6 +12,8 @@ interface Lesson {
   title: string;
   description: string;
   type: 'video' | 'text';
+  content?: string;
+  youtubeVideoId?: string;
   duration: number;
   order: number;
 }
@@ -26,7 +28,7 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ moduleId, lessons, 
   const [showLessonForm, setShowLessonForm] = useState(false);
   const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
 
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<Lesson>();
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<Lesson>();
 
   const handleEdit = (lesson: Lesson) => {
     setEditingLesson(lesson);
@@ -34,6 +36,8 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ moduleId, lessons, 
     setValue('description', lesson.description);
     setValue('type', lesson.type);
     setValue('duration', lesson.duration);
+    setValue('content', lesson.content);
+    setValue('youtubeVideoId', lesson.youtubeVideoId);
     setShowLessonForm(true);
   };
 
@@ -97,6 +101,7 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ moduleId, lessons, 
           register={register}
           errors={errors}
           isEditing={!!editingLesson}
+          watch={watch}
         />
       )}
 

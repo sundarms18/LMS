@@ -1,5 +1,5 @@
 import React from 'react';
-import { UseFormRegister, FieldErrors } from 'react-hook-form';
+import { UseFormRegister, FieldErrors, UseFormWatch } from 'react-hook-form';
 
 interface LessonFormProps {
   onSubmit: (e: React.BaseSyntheticEvent) => void;
@@ -7,9 +7,12 @@ interface LessonFormProps {
   register: UseFormRegister<any>;
   errors: FieldErrors;
   isEditing: boolean;
+  watch: UseFormWatch<any>;
 }
 
-const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, register, errors, isEditing }) => {
+const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, register, errors, isEditing, watch }) => {
+  const lessonType = watch('type', 'video');
+
   return (
     <div className="bg-gray-50 rounded-lg shadow-inner p-6 my-4">
       <h4 className="text-lg font-semibold text-gray-800 mb-4">
@@ -68,6 +71,38 @@ const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, onCancel, register, e
             {errors.duration && <p className="text-sm text-red-600 mt-1">{errors.duration.message as string}</p>}
           </div>
         </div>
+
+        {lessonType === 'video' && (
+          <div>
+            <label htmlFor="youtubeVideoId" className="block text-sm font-medium text-gray-700">
+              YouTube Video ID
+            </label>
+            <input
+              id="youtubeVideoId"
+              {...register('youtubeVideoId', { required: 'YouTube Video ID is required' })}
+              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              placeholder="e.g., dQw4w9WgXcQ"
+            />
+            {errors.youtubeVideoId && <p className="text-sm text-red-600 mt-1">{errors.youtubeVideoId.message as string}</p>}
+          </div>
+        )}
+
+        {lessonType === 'text' && (
+          <div>
+            <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+              Content
+            </label>
+            <textarea
+              id="content"
+              {...register('content', { required: 'Content is required for text lessons' })}
+              rows={5}
+              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter lesson content here. HTML is supported."
+            />
+            {errors.content && <p className="text-sm text-red-600 mt-1">{errors.content.message as string}</p>}
+          </div>
+        )}
+
         <div className="flex justify-end space-x-4">
           <button
             type="button"
